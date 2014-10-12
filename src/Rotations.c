@@ -41,23 +41,25 @@ void leftRightRotate(Node **rootPtr)  {
   Node *node, *currentNode;
   
   currentNode = *rootPtr;
-  
-  printf("RootPtr address %x\n", &rootPtr);
-  printf("Root pointer address %x\n", &(*currentNode));
-  printf("node data %d and address %x\n", currentNode->data, currentNode);
-  printf("left data %d and address %x\n", currentNode->left->data, currentNode->left);
-  printf("right data %d and address %x\n", currentNode->left->right->data, currentNode->left->right);
-  printf("Node10 left address %x\n", &(currentNode->left));
-  printf("------------------------------------\n");
-  
   node = currentNode->left;
+  
   leftRotate(&node);
+  
   currentNode->left = node;
-
-  printf("Variable inside *node address %x\n", *node);
-  printf("node data %d and address %x\n", currentNode->data, currentNode);
-  printf("left data %d and address %x\n", currentNode->left->data, currentNode->left);
-  printf("left2 data %d and address %x\n", currentNode->left->left->data, currentNode->left->left);
   
   rightRotate(&(*rootPtr)); //Pass in *root pointer address
+}
+
+void rightLeftRotate(Node **rootPtr)  {
+  Node *node, *currentNode;
+  
+  currentNode = *rootPtr;
+  node = currentNode->right;
+  
+  rightRotate(&node); 
+   
+  currentNode->right = node;
+  
+  leftRotate(&(*rootPtr)); //Pass in *root pointer address
+
 }
