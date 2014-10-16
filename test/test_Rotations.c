@@ -1,21 +1,10 @@
 #include <stdio.h>
 #include "unity.h"
+#include "Node.h"
+#include "InitNode.h"
 #include "Rotations.h"
 
 Node node1, node5, node6, node7, node8, node10, node15, node20, node30; //Share to all test
-
-void setNode(Node *target, Node *left, Node *right, char color)	{
-	target->left = left;
-	target->right = right;
-	target->color = color;
-}
-
-void resetNode(Node *target, int data)	{
-	target->left = NULL;
-	target->right = NULL;
-	target->color = 'b';
-	target->data = data;
-}
 
 /* Run reset before test*/
 void setUp(void)	{
@@ -56,7 +45,7 @@ void test_rightRotate_3_elements(void)	{
 	TEST_ASSERT_EQUAL_PTR(node10.right, NULL);
 	TEST_ASSERT_EQUAL_PTR(node5.left, &node1);
 	TEST_ASSERT_EQUAL_PTR(node5.right, &node10);
-	TEST_ASSERT_EQUAL_PTR(root, &node5);
+	TEST_ASSERT_EQUAL_PTR(&node5, root);
 }
 
 /*
