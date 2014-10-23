@@ -31,7 +31,7 @@ void tearDown(void) {}
 /*
  * Root->  NULL                10  <-Root
  *                add 10
- *								---->
+ *                ---->
  */
 void test_addRedBlackTree_add_10_to_empty_tree(void)	{
 	setNode(&node10, NULL, NULL, 'r');
@@ -47,8 +47,8 @@ void test_addRedBlackTree_add_10_to_empty_tree(void)	{
 
 /*
  * Root->  	10(b)              		10(b)  <-Root
- *          	      add 5     	/
- *									---->			5(r)
+ *                  add 5        /
+ *                  ---->     5(r)
  */
 void test_addRedBlackTree_add_5_to_tree_with_root_10(void)	{
 	setNode(&node10, NULL, NULL, 'b');
@@ -66,9 +66,9 @@ void test_addRedBlackTree_add_5_to_tree_with_root_10(void)	{
 }
 
 /*
- * Root->  	10(b)              		10(b)  <-Root
- *          	      add 13     	    \
- *									---->	           13(r)
+ * Root->  	10(b)                 10(b)  <-Root
+ *                  add 13            \
+ *                  ---->               13(r)
  */
 void test_addRedBlackTree_add_13_to_tree_with_root_10(void)	{
 	setNode(&node10, NULL, NULL, 'b');
@@ -86,11 +86,11 @@ void test_addRedBlackTree_add_13_to_tree_with_root_10(void)	{
 }
 
 /*
- * Root->  	10(b)              		    10(b)  <-Root                  10(b)  <-Root                       13(b) <-Root
- *          	\         add 13     	    \							rotate right		 \             rotate left        /  \
- *             15(r)		---->	           15(r)        	---->           13(r)         ---->         10(r)   15(r)
- *                                      /																	\          flip color
- *                                   13(r)																 15(r)
+ * Root->  	10(b)                     10(b)  <-Root                     10(b)  <-Root                             13(b) <-Root
+ *              \         add 13          \             rotate right        \               rotate left         /     \
+ *                15(r)   ---->	           15(r)          ---->               13(r)             ---->        10(r)    15(r)
+ *                                        /                                       \          flip color
+ *                                    13(r)                                         15(r)
  */
 void test_addRedBlackTree_add_13_to_tree_with_root_10_and_right_child_15(void)	{
 	setNode(&node13, NULL, NULL, 'r');
@@ -373,7 +373,7 @@ void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_10_right_chi
  *            Root                                  Root
  *             |                                     |
  *             v                                     v
- *        	  20(b)              		               20(b)                                          20(r)
+ *            20(b)                                20(b)                                          20(r)
  *           /	   \                             /      \                                       /       \
  *       4(r)       40(r)         add 7       4(r)        40(r)         flip color           4(b)         40(b)
  *     /   \        /   \         ---->      /   \       /    \           ---->             /   \        /   \
@@ -409,7 +409,7 @@ void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_4_right_chil
 	TEST_ASSERT_EQUAL_NODE(NULL, &node7, 'b', &node5);
 	TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node15);
 	TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node7);
-	TEST_ASSERT_EQUAL_NODE(&node30, &node60, 'b', &node40);
+  TEST_ASSERT_EQUAL_NODE(&node30, &node60, 'b', &node40);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node30);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node60);
 }
