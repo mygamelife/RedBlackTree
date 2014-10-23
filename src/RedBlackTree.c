@@ -27,13 +27,13 @@ void _addRedBlackTree(Node **rootPtr, Node *newNode)	{
 
     if(root->left != NULL)  {
       if(root->right != NULL)
-        childColorViolatation(rootPtr);
+        childColorViolatation(rootPtr);  //handle 4-node
 
       else if(root->left->left != NULL)
-        checkLeftLeft(rootPtr);
+        checkLeftLeft(rootPtr); // handle 3-node
 
       else if(root->left->right != NULL)
-        checkLeftRight(rootPtr);
+        checkLeftRight(rootPtr); // handle 3-node
     }
   }
 
