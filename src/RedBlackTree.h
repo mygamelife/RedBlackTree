@@ -3,8 +3,8 @@
 
 #include "Node.h"
 
-void _addRedBlackTree(Node **rootPtr, Node *newNode);
 void addRedBlackTree(Node **rootPtr, Node *newNode);
+Node *delRedBlackTree(Node **rootPtr, Node *removeNode);
 void checkLeftRight(Node **rootPtr);
 void checkLeftLeft(Node **rootPtr);
 void checkRightRight(Node **rootPtr);

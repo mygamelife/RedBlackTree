@@ -1,17 +1,16 @@
 #include <stdio.h>
 #include "RedBlackTree.h"
 #include "Rotations.h"
+#include "ErrorCode.h"
 
+void _addRedBlackTree(Node **rootPtr, Node *newNode);
+Node *_delRedBlackTree(Node **rootPtr, Node *removeNode);
 
 void addRedBlackTree(Node **rootPtr, Node *newNode)	{
 	_addRedBlackTree(rootPtr, newNode);
 
   Node *root = *rootPtr;
   root->color = 'b';
-
-  // if(root->left != NULL && root->right != NULL)
-    // if(root->left->color == 'b' && root->right->color == 'b')
-      // root->color = 'r';
 }
 
 void _addRedBlackTree(Node **rootPtr, Node *newNode)	{
@@ -137,4 +136,27 @@ void childColorViolatation(Node **rootPtr)  {
       root->color = 'r';
     }
   }
+}
+
+Node *delRedBlackTree(Node **rootPtr, Node *removeNode)  {
+  _delRedBlackTree(rootPtr, removeNode);
+
+  Node *node = *rootPtr;
+  node->color = 'b';
+  
+  return node;
+}
+
+Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
+  Node *node = *rootPtr;
+  
+  if(node->data == removeNode->data)
+    return node;
+    
+  else if(node->data > removeNode->data)  {
+    _delRedBlackTree(&node->left, removeNode);
+    printf("node data %d\n", node->data);
+  } 
+  
+  else Throw(ERR_NODE_UNAVAILABLE);
 }

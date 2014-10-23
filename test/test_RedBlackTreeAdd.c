@@ -356,7 +356,7 @@ void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_10_right_chi
 	Node *root = &node20;
 
 	printf("Start test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_10_right_child_22\n");
-	_addRedBlackTree(&root, &node7);
+	addRedBlackTree(&root, &node7);
 	printf("-----------------------------");
 
 	TEST_ASSERT_EQUAL_PTR(root, &node20);
@@ -373,7 +373,7 @@ void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_10_right_chi
  *            Root                                  Root
  *             |                                     |
  *             v                                     v
- *            20(b)                                20(b)                                          20(r)
+ *            20(b)                                20(b)                                          20(b)
  *           /	   \                             /      \                                       /       \
  *       4(r)       40(r)         add 7       4(r)        40(r)         flip color           4(b)         40(b)
  *     /   \        /   \         ---->      /   \       /    \           ---->             /   \        /   \
@@ -397,12 +397,12 @@ void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_4_right_chil
 	Node *root = &node20;
 
 	printf("Start test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_10_right_child_22\n");
-	_addRedBlackTree(&root, &node7);
+	addRedBlackTree(&root, &node7);
 	printf("-----------------------------");
 
 	TEST_ASSERT_EQUAL_PTR(root, &node20);
 
-	TEST_ASSERT_EQUAL_NODE(&node4, &node40, 'r', &node20);
+	TEST_ASSERT_EQUAL_NODE(&node4, &node40, 'b', &node20);
 	TEST_ASSERT_EQUAL_NODE(&node1, &node10, 'b', &node4);
 	TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node1);
 	TEST_ASSERT_EQUAL_NODE(&node5, &node15, 'r', &node10);
@@ -413,3 +413,22 @@ void test_addRedBlackTree_add_7_to_tree_with_root_20_and_left_child_4_right_chil
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node30);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node60);
 }
+
+/* Remove RedBlackTree
+ *
+ * Root ->  1                 NULL
+ *              ---->
+ *            remove 1
+ */
+ void test_delRedBlackTree_remove_1_from_the_root(void) {
+ 
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
