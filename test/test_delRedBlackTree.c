@@ -47,8 +47,9 @@ void test_delRedBlackTree_remove_1_from_tree_with_root_1(void) {
   printf("Start test_delRedBlackTree_remove_1_from_tree_with_root_1\n");
   result = delRedBlackTree(&root, &node1);
   printf("-------------------------------------------------------\n");
-  
-  TEST_ASSERT_EQUAL_PTR(root, result);
+
+  TEST_ASSERT_EQUAL_PTR(&node1, result);
+  TEST_ASSERT_EQUAL_PTR(NULL, root);
 }
 
 /**2-node case
@@ -65,7 +66,7 @@ void test_delRedBlackTree_remove_2_from_tree_with_root_1(void) {
   Node *root = &node1;
 
   printf("Start test_delRedBlackTree_remove_2_from_tree_with_root_1\n");
-  
+
   Try {
     delRedBlackTree(&root, &node2);
     TEST_FAIL_MESSAGE("Expected ERR_NODE_UNAVAILABLE to be thrown");
@@ -74,7 +75,7 @@ void test_delRedBlackTree_remove_2_from_tree_with_root_1(void) {
     TEST_ASSERT_EQUAL_PTR(root, &node1);
     TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node1);
   }
-  
+
   printf("-------------------------------------------------------\n");
 }
 
@@ -93,11 +94,31 @@ void test_delRedBlackTree_remove_1_from_tree_with_root_2(void) {
   root = &node2;
 
   printf("Start test_delRedBlackTree_remove_1_from_tree_with_root_2\n");
+
   result = delRedBlackTree(&root, &node1);
   printf("-------------------------------------------------------\n");
-  
-  printf("result data %d\n", result->data);
-  TEST_ASSERT_EQUAL(result->data, 1);
   TEST_ASSERT_EQUAL_PTR(root, &node2);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node2);
+}
+
+/* Remove RedBlackTree
+ *            Root                    Root
+ *            |                       |
+ *            v                       v
+ *          1(b)                     1(b)
+ *              \         ---->
+ *               5(r)   remove 1
+ */
+void test_delRedBlackTree_remove_5_from_tree_with_root_1(void) {
+  setNode(&node5, NULL, NULL, 'r');
+  setNode(&node1, NULL, &node5, 'b');
+  Node *root, *result;
+  root = &node1;
+
+  printf("Start test_delRedBlackTree_remove_5_from_tree_with_root_1\n");
+  result = delRedBlackTree(&root, &node5);
+  printf("-------------------------------------------------------\n");
+
+  TEST_ASSERT_EQUAL_PTR(root, &node1);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node1);
 }

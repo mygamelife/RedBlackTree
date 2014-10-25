@@ -139,24 +139,34 @@ void childColorViolatation(Node **rootPtr)  {
 }
 
 Node *delRedBlackTree(Node **rootPtr, Node *removeNode)  {
-  _delRedBlackTree(rootPtr, removeNode);
-
-  Node *node = *rootPtr;
-  node->color = 'b';
+  Node *node;
+  node = _delRedBlackTree(rootPtr, removeNode);
   
+  node->color = 'b';
+
   return node;
 }
 
 Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
   Node *node = *rootPtr;
   
-  if(node->data == removeNode->data)
-    return node;
+  if(node == NULL)
+    Throw(ERR_NODE_UNAVAILABLE);
     
+  else if(node->data == removeNode->data)  {
+    node = removeNode;
+    printf("node->data %d\n", node->data);
+    printf("node address %x\n", node);
+    printf("*rootPtr %x\n", &rootPtr);
+    *rootPtr = NULL;
+    return node;
+  } 
+   
   else if(node->data > removeNode->data)  {
     _delRedBlackTree(&node->left, removeNode);
-    printf("node data %d\n", node->data);
   } 
   
-  else Throw(ERR_NODE_UNAVAILABLE);
+  else if(node->data < removeNode->data)  {
+    _delRedBlackTree(&node->right, removeNode);
+  }
 }
