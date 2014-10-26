@@ -138,35 +138,86 @@ void childColorViolatation(Node **rootPtr)  {
   }
 }
 
-Node *delRedBlackTree(Node **rootPtr, Node *removeNode)  {
-  Node *node;
-  node = _delRedBlackTree(rootPtr, removeNode);
+void handleViolatation(Node **rootPtr)  {
+  Node *root = *rootPtr;
+
+  if(root->left == NULL && root->right != NULL) {
+    if(root->right->left !=NULL && root->right->right != NULL)
+      leftRotate(&(*rootPtr));
+  }
   
-  node->color = 'b';
+  else if(root->left != NULL && root->right == NULL) {
+    if(root->left->left !=NULL && root->left->right != NULL)
+      rightRotate(&(*rootPtr));
+  }
+}
+
+void colorFlipping(Node **rootPtr, Node *removedNode)  {
+  Node *root = *rootPtr;
+
+  if(root->left == NULL && root->right != NULL) {
+    if(root->right->color == 'b') {
+      root->color = 'b';
+      root->right->color = 'r';
+    }
+    return;
+  }
+
+  else if(root->left != NULL && root->right == NULL)  {
+    if(root->left->color == 'b')  {
+      root->color = 'b';
+      root->left->color = 'r';
+    }
+    return;
+  }
+
+  else if(root->data > removedNode->data)
+    colorFlipping(&root->left, removedNode);
+
+  else if(root->data < removedNode->data)
+    colorFlipping(&root->right, removedNode);
+}
+
+Node *delRedBlackTree(Node **rootPtr, Node *removeNode)  {
+  Node *root, *node;
+
+  node = _delRedBlackTree(rootPtr, removeNode);
+  root = *rootPtr;
+
+  if(root != NULL)
+    root->color = 'b';
 
   return node;
 }
 
 Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
-  Node *node = *rootPtr;
-  
+  Node *root, *node = *rootPtr;
+
   if(node == NULL)
     Throw(ERR_NODE_UNAVAILABLE);
-    
+
   else if(node->data == removeNode->data)  {
-    node = removeNode;
-    printf("node->data %d\n", node->data);
-    printf("node address %x\n", node);
-    printf("*rootPtr %x\n", &rootPtr);
     *rootPtr = NULL;
     return node;
-  } 
-   
+  }
+
   else if(node->data > removeNode->data)  {
-    _delRedBlackTree(&node->left, removeNode);
-  } 
-  
+    node = _delRedBlackTree(&node->left, removeNode);
+
+    if(node->color == 'b')  {
+      handleViolatation(rootPtr);
+      colorFlipping(rootPtr, node);
+    }
+    return node;
+  }
+
   else if(node->data < removeNode->data)  {
-    _delRedBlackTree(&node->right, removeNode);
+    node = _delRedBlackTree(&node->right, removeNode);
+
+    if(node->color == 'b')  {
+      handleViolatation(rootPtr);
+      colorFlipping(rootPtr, node);
+    }
+    return node;
   }
 }

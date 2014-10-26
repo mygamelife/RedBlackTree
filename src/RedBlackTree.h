@@ -10,5 +10,7 @@ void checkLeftLeft(Node **rootPtr);
 void checkRightRight(Node **rootPtr);
 void checkRightLeft(Node **rootPtr);
 void childColorViolatation(Node **rootPtr);
+void handleViolatation(Node **rootPtr);
+void colorFlipping(Node **rootPtr, Node *removedNode);
 
 #endif // RedBlackTree_H
