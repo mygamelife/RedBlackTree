@@ -84,7 +84,7 @@ void test_delRedBlackTree_remove_1_from_tree_with_left_sibling_red_case1(void) {
   root = &node2;
 
   printf("Start test_delRedBlackTree_remove_1_from_tree_with_left_sibling_red_case1\n");
-  result = delRedBlackTree(&root, &node1);
+  result = _delRedBlackTree(&root, &node1);
   printf("-------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL_PTR(&node1, result);
@@ -116,7 +116,7 @@ void test_delRedBlackTree_remove_10_from_tree_with_left_sibling_black_left_nephe
   root = &node5;
 
   printf("Start test_delRedBlackTree_remove_10_from_tree_with_left_sibling_black_left_nephew_red_case1\n");
-  result = delRedBlackTree(&root, &node10);
+  result = _delRedBlackTree(&root, &node10);
   printf("-------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL_PTR(&node10, result);
@@ -149,7 +149,7 @@ void test_delRedBlackTree_remove_10_from_tree_with_left_sibling_black_right_neph
   root = &node5;
 
   printf("Start test_delRedBlackTree_remove_10_from_tree_with_left_sibling_black_right_nephew_red_case1\n");
-  result = delRedBlackTree(&root, &node10);
+  result = _delRedBlackTree(&root, &node10);
   printf("-------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL_PTR(&node10, result);
@@ -169,7 +169,7 @@ void test_delRedBlackTree_remove_10_from_tree_with_left_sibling_black_right_neph
  *             /   \            ---->             //   \           ---->                    \
  *         1(b)     3(b)                        (d)     3(b)                                 3(r)
  */
-void test_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_black_case2(void) {
+void Xtest_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_black_case2(void) {
   setNode(&node1, NULL, NULL, 'b');
   setNode(&node3, NULL, NULL, 'b');
   setNode(&node2, &node1, &node3, 'b');
@@ -177,7 +177,7 @@ void test_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_
   root = &node2;
 
   printf("Start test_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_black_case2\n");
-  result = delRedBlackTree(&root, &node1);
+  result = _delRedBlackTree(&root, &node1);
   printf("-------------------------------------------------------\n");
 
   TEST_ASSERT_EQUAL_PTR(&node1, result);

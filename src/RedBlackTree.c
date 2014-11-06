@@ -3,9 +3,9 @@
 #include "Rotations.h"
 #include "ErrorCode.h"
 
+char colorNode;
 void _addRedBlackTree(Node **rootPtr, Node *newNode);
 Node *_delRedBlackTreex(Node **rootPtr, Node *removeNode);
-Node *_delRedBlackTree(Node **rootPtr, Node *removeNode);
 
 void addRedBlackTree(Node **rootPtr, Node *newNode)	{
 	_addRedBlackTree(rootPtr, newNode);
@@ -139,12 +139,46 @@ void childColorViolatation(Node **rootPtr)  {
   }
 }
 
-void handleViolatation(Node **rootPtr)  {
+void handleCaseOne(Node **rootPtr)  {
   Node *root = *rootPtr;
 
+  //Right side
+  if(root->right != NULL) {
+    if(root->right->right != NULL && root->right->right->color == 'r')
+      leftRotate(&(*rootPtr));
+
+    else if(root->right->left != NULL && root->right->left->color == 'r')
+      rightLeftRotate(&(*rootPtr));
+  }
+
+  //Left side
+  else if(root->left != NULL) {
+    if(root->left->left != NULL && root->left->left->color == 'r')
+      rightRotate(&(*rootPtr));
+
+    else if(root->left->right != NULL && root->left->right->color == 'r')
+      leftRightRotate(&(*rootPtr));
+  }
+}
+
+void handleCaseTwo(Node **rootPtr)  {
+  //case 2
+
+}
+
+void handleCaseThree(Node **rootPtr)  {
+  //case 3
+
+}
+void handleViolatation(Node **rootPtr)  {
+  Node *root = *rootPtr;
+  colorNode = root->color;
+  //case 1
+  handleCaseOne(rootPtr);
+  /*
   //Right Side
   if(root->left == NULL && root->right != NULL) {
-    //case 1 sibling 'b' and nephew 'r' (right side)
+    // case 1 sibling 'b' and nephew 'r' (right side)
     if(root->right->left == NULL && root->right->right != NULL) {
       if(root->right->color == 'b' && root->right->right->color == 'r')
         leftRotate(&(*rootPtr));
@@ -156,9 +190,9 @@ void handleViolatation(Node **rootPtr)  {
     }
   }
 
-  //Left Side
+  // Left Side
   else if(root->left != NULL && root->right == NULL) {
-    //case 1 sibling 'b' and nephew 'r' (left side)
+    // case 1 sibling 'b' and nephew 'r' (left side)
     if(root->left->left != NULL && root->left->right == NULL)  {
       if(root->left->color == 'b' && root->left->left->color == 'r')
         rightRotate(&(*rootPtr));
@@ -169,6 +203,7 @@ void handleViolatation(Node **rootPtr)  {
         leftRightRotate(&(*rootPtr));
     }
   }
+  */
 }
 
 void colorFlipping(Node **rootPtr, Node *removedNode)  {
@@ -176,6 +211,7 @@ void colorFlipping(Node **rootPtr, Node *removedNode)  {
 
   //force sibling to black color
   if(root->left != NULL && root->right != NULL) {
+    root->color = colorNode;
     root->left->color = 'b';
     root->right->color = 'b';
   }
