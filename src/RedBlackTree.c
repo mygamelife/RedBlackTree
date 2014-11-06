@@ -159,6 +159,7 @@ void handleCaseOne(Node **rootPtr)  {
     else if(root->left->right != NULL && root->left->right->color == 'r')
       leftRightRotate(&(*rootPtr));
   }
+
 }
 
 void handleCaseTwo(Node **rootPtr)  {
@@ -179,11 +180,21 @@ void handleCaseThree(Node **rootPtr)  {
       leftRotate(&(*rootPtr));
   }
 }
+
+int isDoubleBlack(Node *rootPtr)  {
+
+  if(rootPtr == NULL || rootPtr->color == 'd')
+    return 1;
+  else
+    return 0;
+}
+
 void handleViolatation(Node **rootPtr)  {
   Node *root = *rootPtr;
   colorNode = root->color;
-  //case 1
-  handleCaseOne(rootPtr);
+
+
+  handleCaseOne(rootPtr); //case 1
   //case 3
   handleCaseThree(rootPtr);
   /*
@@ -324,28 +335,26 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
 
   else if(node->data == removeNode->data)  {
     *rootPtr = NULL;
-    node->color = 'd';
     return node;
   }
 
   else if(node->data > removeNode->data)  {
     node = _delRedBlackTree(&node->left, removeNode);
 
-    if(node->color == 'd')
+    if((isDoubleBlack((*rootPtr)->left))) {
       handleViolatation(rootPtr);
       colorFlipping(rootPtr, node);
-
+    }
     return node;
   }
 
   else if(node->data < removeNode->data)  {
     node = _delRedBlackTree(&node->right, removeNode);
 
-    if(node->color == 'd')  {
+    if((isDoubleBlack((*rootPtr)->right))) {
       handleViolatation(rootPtr);
       colorFlipping(rootPtr, node);
     }
-
     return node;
   }
 }
