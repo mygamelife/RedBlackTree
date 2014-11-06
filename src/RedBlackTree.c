@@ -171,7 +171,13 @@ void handleCaseTwo(Node **rootPtr)  {
 
 void handleCaseThree(Node **rootPtr)  {
   //case 3
+  Node *root = *rootPtr;
 
+  //Right side
+  if(root->right != NULL && root->right->color == 'r')  {
+    if(root->right->left != NULL && root->right->right != NULL)
+      leftRotate(&(*rootPtr));
+  }
 }
 void handleViolatation(Node **rootPtr)  {
   Node *root = *rootPtr;
@@ -236,6 +242,10 @@ void colorFlipping(Node **rootPtr, Node *removedNode)  {
   else if(root->left != NULL && root->right == NULL)  {
     if(root->color == 'b' && root->left->color == 'b') {
       root->color = 'd';
+      root->left->color = 'r';
+    }
+    else if(root->color == 'r' && root->left->color == 'b') {
+      root->color = 'b';
       root->left->color = 'r';
     }
     return;
