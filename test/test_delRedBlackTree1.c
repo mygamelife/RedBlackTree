@@ -164,12 +164,12 @@ void test_delRedBlackTree_remove_10_from_tree_with_left_sibling_black_right_neph
  *                  Root                              Root                                Root
  *                  |                                 |                                    |
  *                 v                                 v                                    v
- *                  /                                 /                                   /
- *               2(b)           remove 1            2(b)          colorFlip              2(b)
+ *                  /                                 /                                   //
+ *               2(b)           remove 1            2(b)          colorFlip              2(d)
  *             /   \            ---->             //   \           ---->                    \
  *         1(b)     3(b)                        (d)     3(b)                                 3(r)
  */
-void Xtest_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_black_case2(void) {
+void test_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_black_case2(void) {
   setNode(&node1, NULL, NULL, 'b');
   setNode(&node3, NULL, NULL, 'b');
   setNode(&node2, &node1, &node3, 'b');
@@ -177,6 +177,60 @@ void Xtest_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are
   root = &node2;
 
   printf("Start test_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_black_case2\n");
+  result = _delRedBlackTree(&root, &node1);
+  printf("-------------------------------------------------------\n");
+
+  TEST_ASSERT_EQUAL_PTR(&node1, result);
+
+  TEST_ASSERT_EQUAL_PTR(&node2, root);
+  TEST_ASSERT_EQUAL_NODE(NULL, &node3, 'd', root);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node3);
+}
+
+/**case 2
+ *                  Root                              Root                                Root
+ *                  |                                 |                                    |
+ *                 v                                 v                                    v
+ *                  /                                 /                                   //
+ *               2(b)           remove 3            2(b)          colorFlip              2(d)
+ *             /   \            ---->             /    \\           ---->               /
+ *         1(b)     3(b)                       1(b)     (d)                         1(r)
+ */
+void test_delRedBlackTree_remove_3_from_tree_with_both_siblings_and_nephews_are_black_case2(void) {
+  setNode(&node1, NULL, NULL, 'b');
+  setNode(&node3, NULL, NULL, 'b');
+  setNode(&node2, &node1, &node3, 'b');
+  Node *root, *result;
+  root = &node2;
+
+  printf("Start test_delRedBlackTree_remove_3_from_tree_with_both_siblings_and_nephews_are_black_case2\n");
+  result = _delRedBlackTree(&root, &node3);
+  printf("-------------------------------------------------------\n");
+
+  TEST_ASSERT_EQUAL_PTR(&node3, result);
+
+  TEST_ASSERT_EQUAL_PTR(&node2, root);
+  TEST_ASSERT_EQUAL_NODE(&node1, NULL, 'd', root);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node1);
+}
+
+/**case 2
+ *                  Root                              Root                                Root
+ *                  |                                 |                                    |
+ *                 v                                 v                                    v
+ *                  /                                 /                                     /
+ *               2(r)           remove 1            2(r)          colorFlip              2(b)
+ *             /   \            ---->             //    \           ---->                   \
+ *         1(b)     3(b)                       (d)       3(b)                                3(r)
+ */
+void test_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_black_case2b(void) {
+  setNode(&node1, NULL, NULL, 'b');
+  setNode(&node3, NULL, NULL, 'b');
+  setNode(&node2, &node1, &node3, 'r');
+  Node *root, *result;
+  root = &node2;
+
+  printf("Start test_delRedBlackTree_remove_1_from_tree_with_both_siblings_and_nephews_are_black_case2b\n");
   result = _delRedBlackTree(&root, &node1);
   printf("-------------------------------------------------------\n");
 

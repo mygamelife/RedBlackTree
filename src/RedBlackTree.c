@@ -162,7 +162,10 @@ void handleCaseOne(Node **rootPtr)  {
 }
 
 void handleCaseTwo(Node **rootPtr)  {
-  //case 2
+  Node *root = *rootPtr;
+
+  //Right side
+  //Left side
 
 }
 
@@ -175,6 +178,8 @@ void handleViolatation(Node **rootPtr)  {
   colorNode = root->color;
   //case 1
   handleCaseOne(rootPtr);
+  //case 3
+  handleCaseThree(rootPtr);
   /*
   //Right Side
   if(root->left == NULL && root->right != NULL) {
@@ -217,7 +222,11 @@ void colorFlipping(Node **rootPtr, Node *removedNode)  {
   }
 
   else if(root->left == NULL && root->right != NULL) {
-    if(root->right->color == 'b') {
+    if(root->color == 'b' && root->right->color == 'b') {
+      root->color = 'd';
+      root->right->color = 'r';
+    }
+    else if(root->color == 'r' && root->right->color == 'b') {
       root->color = 'b';
       root->right->color = 'r';
     }
@@ -225,8 +234,8 @@ void colorFlipping(Node **rootPtr, Node *removedNode)  {
   }
 
   else if(root->left != NULL && root->right == NULL)  {
-    if(root->left->color == 'b')  {
-      root->color = 'b';
+    if(root->color == 'b' && root->left->color == 'b') {
+      root->color = 'd';
       root->left->color = 'r';
     }
     return;
@@ -312,10 +321,9 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
   else if(node->data > removeNode->data)  {
     node = _delRedBlackTree(&node->left, removeNode);
 
-    if(node->color == 'd')  {
+    if(node->color == 'd')
       handleViolatation(rootPtr);
       colorFlipping(rootPtr, node);
-    }
 
     return node;
   }
