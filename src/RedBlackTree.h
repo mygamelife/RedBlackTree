@@ -5,6 +5,7 @@
 
 void addRedBlackTree(Node **rootPtr, Node *newNode);
 Node *delRedBlackTree(Node **rootPtr, Node *removeNode);
+Node *delRedBlackTreex(Node **rootPtr, Node *removeNode);
 void checkLeftRight(Node **rootPtr);
 void checkLeftLeft(Node **rootPtr);
 void checkRightRight(Node **rootPtr);
