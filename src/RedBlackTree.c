@@ -223,7 +223,7 @@ Node *_delRedBlackTreex(Node **rootPtr, Node *removeNode) {
     return node;
   }
 }
-/*---------------------Old-----------------------------------*/
+/*--------------------------New-------------------------------*/
 int isDoubleBlack(Node *rootPtr)  {
   if(rootPtr == NULL || rootPtr->color == 'd')
     return 1;
@@ -243,6 +243,10 @@ int checkGrandchild(Node *rootPtr)  {
 }
 
 int caseSelect(Node *rootPtr) {
+  
+  if(rootPtr == NULL)
+    return;
+    
   Node* rootLeftPtr = rootPtr->left;
   Node* rootRightPtr = rootPtr->right;
   
@@ -250,16 +254,16 @@ int caseSelect(Node *rootPtr) {
     printf("rootRightPtr %d\n", rootRightPtr->data);
   else if(rootLeftPtr != NULL)
     printf("rootLeftPtr %d\n", rootLeftPtr->data);
-  //case1 sibling is black and has a red nephew
+  // case1 sibling is black and has a red nephew
   if(rootPtr->color == 'b') {
     if(rootRightPtr != NULL && rootRightPtr->color == 'r' ||  rootLeftPtr != NULL && rootLeftPtr->color == 'r')
       return 1;
-    //case2 sibling is black and both nephew are black
+    // case2 sibling is black and both nephew are black
     else if((rootRightPtr == NULL || rootRightPtr->color == 'b') && (rootLeftPtr == NULL || rootLeftPtr->color == 'b'))
       return 2;
   }
   
-  else if(rootPtr->color == 'r')
+  else if(rootPtr->color == 'r' && (rootPtr->left  ||  rootPtr->right))
     return 3;
     
   else  return -1;
@@ -272,6 +276,7 @@ void handleCaseViolation(Node **rootPtr, int caseNum)  {
     handleCaseTwo(rootPtr);
   else if(caseNum == 3)
     handleCaseThree(rootPtr);
+  else return;
 }
 
 //handle Case 1
@@ -381,7 +386,7 @@ Node *delRedBlackTree(Node **rootPtr, Node *removeNode)  {
   Node *root, *node;
 
   node = _delRedBlackTree(rootPtr, removeNode);
-
+  
   if(*rootPtr != NULL)
     (*rootPtr)->color = 'b';
 
@@ -406,11 +411,12 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
     node = _delRedBlackTree(&node->left, removeNode);
     
     if(isDoubleBlack((*rootPtr)->left)) {
+      if((*rootPtr) != NULL)
+        printf("data %d\n", (*rootPtr)->data);
       _case = caseSelect((*rootPtr)->right);
       printf("_case %d\n", _case);
       handleCaseViolation(&(*rootPtr), _case);
-    }
-    
+    }    
     return node;
   }
 
@@ -422,8 +428,7 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
       _case = caseSelect((*rootPtr)->left);
       printf("_case %d\n", _case);
       handleCaseViolation(&(*rootPtr), _case);
-    }
-    
+    }   
     return node;
   }
 }
