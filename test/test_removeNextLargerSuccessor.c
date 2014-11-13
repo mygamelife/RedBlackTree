@@ -99,7 +99,7 @@ void test_removeSuccessor_remove_successor_with_parent_1_and_one_right_child(voi
  *         /          ---->
  *    2(r)
  */
-void Xtest_removeSuccessor_remove_successor_with_parent_5_and_right_child_is_NULL(void)  {
+void test_removeSuccessor_remove_successor_with_parent_5_and_right_child_is_NULL(void)  {
   setNode(&node2, NULL, NULL, 'r');
   setNode(&node5, &node2, NULL, 'b');
   Node *parent = &node5;
