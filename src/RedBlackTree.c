@@ -147,7 +147,7 @@ void handleViolatation(Node **rootPtr)  {
     if(root->right->left !=NULL && root->right->right != NULL)
       leftRotate(&(*rootPtr));
   }
-  
+
   else if(root->left != NULL && root->right == NULL) {
     if(root->left->left !=NULL && root->left->right != NULL)
       rightRotate(&(*rootPtr));
@@ -224,10 +224,16 @@ Node *_delRedBlackTreex(Node **rootPtr, Node *removeNode) {
   }
 }
 /*--------------------------New-------------------------------*/
-int isDoubleBlack(Node *rootPtr)  {
-  if(rootPtr == NULL || rootPtr->color == 'd')
-    return 1;
-  
+int isDoubleBlack(Node *rootPtr, Node *removedNode) {
+
+  if(rootPtr != NULL)
+    printf("isDoubleBlack rootPtr %d\n", rootPtr->data);
+
+  if(rootPtr == NULL  ||  rootPtr->color == 'd')  {
+    if(removedNode->color == 'b')
+      return 1;
+  }
+
   else  return 0;
 }
 
@@ -235,47 +241,48 @@ int isDoubleBlack(Node *rootPtr)  {
 int checkGrandchild(Node *rootPtr)  {
 
   if(rootPtr != NULL) {
-    if(rootPtr->left != NULL || rootPtr->right != NULL)
+    if(rootPtr->left != NULL  ||  rootPtr->color == 'd' ||  rootPtr->right != NULL)
       return 1;
   }
-  
+
   else  return 0;
 }
 
 int caseSelect(Node *rootPtr) {
-  
+
   if(rootPtr == NULL)
-    return;
-    
+    return  0;
+
+  if(rootPtr != NULL)
+    printf("rootPtr %d\n", rootPtr->data);
+
   Node* rootLeftPtr = rootPtr->left;
   Node* rootRightPtr = rootPtr->right;
-  
+
   if(rootRightPtr != NULL)
     printf("rootRightPtr %d\n", rootRightPtr->data);
   else if(rootLeftPtr != NULL)
     printf("rootLeftPtr %d\n", rootLeftPtr->data);
   // case1 sibling is black and has a red nephew
   if(rootPtr->color == 'b') {
-    if(rootRightPtr != NULL && rootRightPtr->color == 'r' ||  rootLeftPtr != NULL && rootLeftPtr->color == 'r')
+    if((rootRightPtr != NULL && rootRightPtr->color == 'r') ||  (rootLeftPtr != NULL && rootLeftPtr->color == 'r'))
       return 1;
     // case2 sibling is black and both nephew are black
     else if((rootRightPtr == NULL || rootRightPtr->color == 'b') && (rootLeftPtr == NULL || rootLeftPtr->color == 'b'))
       return 2;
   }
-  
+
   else if(rootPtr->color == 'r' && (rootPtr->left  ||  rootPtr->right))
     return 3;
-    
-  else  return -1;
 }
 
-void handleCaseViolation(Node **rootPtr, int caseNum)  {
+void handleCaseViolation(Node **rootPtr, int caseNum, Node *removedNode)  {
   if(caseNum == 1)
     handleCaseOne(rootPtr);
   else if(caseNum == 2)
     handleCaseTwo(rootPtr);
   else if(caseNum == 3)
-    handleCaseThree(rootPtr);
+    handleCaseThree(rootPtr, removedNode);
   else return;
 }
 
@@ -284,20 +291,20 @@ void handleCaseOne(Node **rootPtr) {
   Node *root = *rootPtr;
   parentColor = root->color;
   printf("parentColor %c\n", parentColor);
-  
+
   //Rotation (Right side)
   if(root->right != NULL) {
     if(root->right->left == NULL && root->right->right != NULL) {
       leftRotate(&(*rootPtr));
       printf("(*rootPtr)->data %d\n", (*rootPtr)->data);
     }
-  
+
     else if(root->right->left != NULL && root->right->right == NULL) {
       rightLeftRotate(&(*rootPtr));
       printf("(*rootPtr)->data %d\n", (*rootPtr)->data);
     }
   }
-  
+
   //Rotation (left side)
   else if(root->left != NULL) {
     if(root->left->left != NULL && root->left->right == NULL) {
@@ -309,7 +316,7 @@ void handleCaseOne(Node **rootPtr) {
       printf("(*rootPtr)->data %d\n", (*rootPtr)->data);
     }
   }
-  
+
   //color flipping
   (*rootPtr)->color = parentColor;
   (*rootPtr)->left->color = 'b';
@@ -325,29 +332,30 @@ void handleCaseTwo(Node **rootPtr)  {
     root->color = 'd';
   else if(root->color == 'r')
     root->color = 'b';
-  
+
   if(root->left != NULL)
     root->left->color = 'r';
-  else if(root->right != NULL)
+  if(root->right != NULL)
     root->right->color = 'r';
-  else if(root->left != NULL && root->right != NULL)  {
+  if(root->left != NULL && root->right != NULL)  {
     root->left->color = 'b';
+    root->right->color = 'b';
   }
 }
 
 //handle Case3
-void handleCaseThree(Node **rootPtr)  {
+void handleCaseThree(Node **rootPtr, Node *removedNode)  {
   Node *root = *rootPtr;
-  
+
   //Rotation (Right side)
   if(root->right != NULL && root->right->color == 'r') {
     leftRotate(&(*rootPtr));
     printf("*rootPtr->data %d\n", (*rootPtr)->data);
-    
+
     (*rootPtr)->color = 'b';
     (*rootPtr)->left->color = 'r';
   }
-  
+
   //Rotation (left side)
   else if(root->left != NULL && root->left->color == 'r') {
     rightRotate(&(*rootPtr));
@@ -356,27 +364,27 @@ void handleCaseThree(Node **rootPtr)  {
     (*rootPtr)->color = 'b';
     (*rootPtr)->right->color = 'r';
   }
-  
+
   Node *rootLeftPtr = (*rootPtr)->left; //left sibling
   Node *rootRightPtr = (*rootPtr)->right; //right sibling
-  
+
   //check isDoubleBlack at left side(case2)
-  if(isDoubleBlack(rootLeftPtr->left)  &&  rootLeftPtr->color == 'r'  &&  !checkGrandchild(rootLeftPtr->right))  {
+  if(isDoubleBlack(rootLeftPtr->left, removedNode)  &&  rootLeftPtr->color == 'r'  &&  !checkGrandchild(rootLeftPtr->right))  {
     // if((*rootPtr)->left->right != NULL && (*rootPtr)->left->right->color == 'b')
       handleCaseTwo(&(*rootPtr)->left); //call case2
   }
   //check isDoubleBlack at right side(case2)
-  else if(isDoubleBlack(rootRightPtr->right)  &&  rootRightPtr->color == 'r'  &&  !checkGrandchild(rootRightPtr->left))  {
+  else if(isDoubleBlack(rootRightPtr->right, removedNode)  &&  rootRightPtr->color == 'r'  &&  !checkGrandchild(rootRightPtr->left))  {
     // if((*rootPtr)->right->left != NULL && (*rootPtr)->right->left->color == 'b')
       handleCaseTwo(&(*rootPtr)->right); //call case2
   }
   //check isDoubleBlack at left side(case1)
-  else if(isDoubleBlack(rootLeftPtr->left)  &&  rootLeftPtr->color == 'r'  &&  checkGrandchild(rootLeftPtr->right))  {
+  else if(isDoubleBlack(rootLeftPtr->left, removedNode)  &&  rootLeftPtr->color == 'r'  &&  checkGrandchild(rootLeftPtr->right))  {
     // if((*rootPtr)->left->right != NULL && (*rootPtr)->left->right->color == 'b')
       handleCaseOne(&(*rootPtr)->left); //call case1
   }
   //check isDoubleBlack at right side(case1)
-  else if(isDoubleBlack(rootLeftPtr->right)  &&  rootRightPtr->color == 'r'  &&  checkGrandchild(rootRightPtr->left))  {
+  else if(isDoubleBlack(rootLeftPtr->right, removedNode)  &&  rootRightPtr->color == 'r'  &&  checkGrandchild(rootRightPtr->left))  {
   // if((*rootPtr)->left->right != NULL && (*rootPtr)->left->right->color == 'b')
       handleCaseOne(&(*rootPtr)->right); //call case1
   }
@@ -386,7 +394,7 @@ Node *delRedBlackTree(Node **rootPtr, Node *removeNode)  {
   Node *root, *node;
 
   node = _delRedBlackTree(rootPtr, removeNode);
-  
+
   if(*rootPtr != NULL)
     (*rootPtr)->color = 'b';
 
@@ -396,7 +404,7 @@ Node *delRedBlackTree(Node **rootPtr, Node *removeNode)  {
 Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
   Node *root, *node = *rootPtr;
   int _case;
-  
+
   if(node == NULL)
     Throw(ERR_NODE_UNAVAILABLE);
 
@@ -409,14 +417,12 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
   //left side
   else if(node->data > removeNode->data)  {
     node = _delRedBlackTree(&node->left, removeNode);
-    
-    if(isDoubleBlack((*rootPtr)->left)) {
-      if((*rootPtr) != NULL)
-        printf("data %d\n", (*rootPtr)->data);
+
+    if(isDoubleBlack((*rootPtr)->left, node)) {
       _case = caseSelect((*rootPtr)->right);
       printf("_case %d\n", _case);
-      handleCaseViolation(&(*rootPtr), _case);
-    }    
+      handleCaseViolation(&(*rootPtr), _case, node);
+    }
     return node;
   }
 
@@ -424,11 +430,11 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
   else if(node->data < removeNode->data)  {
     node = _delRedBlackTree(&node->right, removeNode);
 
-    if(isDoubleBlack((*rootPtr)->right)) {
+    if(isDoubleBlack((*rootPtr)->right, node)) {
       _case = caseSelect((*rootPtr)->left);
       printf("_case %d\n", _case);
-      handleCaseViolation(&(*rootPtr), _case);
-    }   
+      handleCaseViolation(&(*rootPtr), _case, node);
+    }
     return node;
   }
 }
