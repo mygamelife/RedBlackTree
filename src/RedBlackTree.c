@@ -223,16 +223,18 @@ Node *_delRedBlackTreex(Node **rootPtr, Node *removeNode) {
     return node;
   }
 }
-/*--------------------------New-------------------------------*/
+
+/***************************************************************
+ **                   New delRedBlackTree                     **
+ ***************************************************************/
+
 int isDoubleBlack(Node *rootPtr, Node *removedNode) {
 
   if(rootPtr != NULL)
     printf("isDoubleBlack rootPtr %d\n", rootPtr->data);
 
-  if(rootPtr == NULL  ||  rootPtr->color == 'd')  {
-    if(removedNode->color == 'b')
-      return 1;
-  }
+  if((rootPtr == NULL  &&  removedNode->color == 'b') ||  (rootPtr == NULL  ||  rootPtr->color == 'd'))
+    return 1;
 
   else  return 0;
 }
@@ -437,4 +439,37 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
     }
     return node;
   }
+}
+
+/*********************************************
+ **       removeNextLargerSuccessor         **
+ *********************************************/
+Node *removeNextLargerSuccessor(Node **parentPtr) {
+
+  if(parent->left && parent->right)
+    return parent;
+    
+  else
+    Node *removedNode = _removeNextLargerSuccessor(&(parentPtr->right));
+  
+  return  removedNode;
+}
+
+Node *_removeNextLargerSuccessor(Node **parentPtr) {
+  Node *parent = *parentPtr;
+  Node *removedNode;
+
+  if(parent == NULL)
+    return;
+
+  else if(parent->left == NULL && parent->right == NULL)  {
+    *parentPtr = NULL;
+    return parent;
+  }
+
+  else if(parent->left)
+    _removeNextLargerSuccessor(&(parent->left));
+
+  else if(parent->right)
+    _removeNextLargerSuccessor(&(parent->right));
 }

@@ -525,3 +525,7 @@ void test_delRedBlackTreexx_remove_7_without_rotation_but_flip_color_with_root_4
   TEST_ASSERT_EQUAL_NODE(&node5, NULL, 'b', &node6);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node5);
 }
+
+
+
+

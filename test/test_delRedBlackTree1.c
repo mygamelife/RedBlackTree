@@ -38,17 +38,19 @@ void tearDown(void) {}
  */
 void test_isDoubleBlack_given_NULL_pointer_should_return_1(void) {
   Node *root = NULL;
+  setNode(&node10, NULL, NULL, 'b');
 
-  int result = isDoubleBlack(root);
+  int result = isDoubleBlack(root, &node10);
 
   TEST_ASSERT_EQUAL(1, result);
 }
 
 void test_isDoubleBlack_given_node_with_doubleBlack_color_should_return_1(void) {
   setNode(&node10, NULL, NULL, 'd');
+  setNode(&node20, NULL, NULL, 'b');
   Node *root = &node10;
 
-  int result = isDoubleBlack(root);
+  int result = isDoubleBlack(root, &node20);
 
   TEST_ASSERT_EQUAL(1, result);
 }
@@ -390,3 +392,5 @@ void test_delRedBlackTree_remove_1_from_tree_with_siblings_red_case3b(void) {
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node4);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node6);
 }
+
+

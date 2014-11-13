@@ -23,4 +23,9 @@ void handleCaseViolation(Node **rootPtr, int caseNum, Node *removedNode);
 void handleCaseOne(Node **rootPtr);
 void handleCaseTwo(Node **rootPtr);
 void handleCaseThree(Node **rootPtr, Node *removedNode);
+
+//remove successor
+Node *removeNextLargerSuccessor(Node **parentPtr);
+Node *_removeNextLargerSuccessor(Node **parentPtr);
+
 #endif // RedBlackTree_H
