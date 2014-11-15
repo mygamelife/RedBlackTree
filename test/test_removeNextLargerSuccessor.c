@@ -36,16 +36,17 @@ void tearDown(void) {}
  *       parent                     parent
  *        |                          |
  *        V                          v
- *       1(r)   successor 1(r)      NULL (No DoubleBlack)
+ *       5(r)   successor 5(r)      NULL (No DoubleBlack)
  *                 ---->
  */
 void test_removeSuccessor_remove_successor_with_parent_1r(void)  {
-  setNode(&node1, NULL, NULL, 'r');
-  Node *parent = &node1;
+  setNode(&node5, NULL, NULL, 'r');
+  Node *parent = &node5;
 
   Node *removedNode = removeNextLargerSuccessor(&parent);
 
   TEST_ASSERT_NOT_NULL(removedNode);
+  TEST_ASSERT_EQUAL(5, removedNode->data);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', removedNode);
   TEST_ASSERT_NULL(parent);
   TEST_ASSERT_EQUAL(0, isDoubleBlack(parent, removedNode));
@@ -55,8 +56,8 @@ void test_removeSuccessor_remove_successor_with_parent_1r(void)  {
  *       parent                     parent
  *        |                          |
  *        V                          v
- *       10(b)   successor 10(b)      NULL (No DoubleBlack)
- *                 ---->
+ *       10(b)   successor 10(b)     // (DoubleBlack)
+ *                 ---->            -
  */
 void test_removeSuccessor_remove_successor_with_parent_10b(void)  {
   setNode(&node1, NULL, NULL, 'b');
@@ -114,14 +115,14 @@ void test_removeSuccessor_remove_successor_with_parent_5_and_right_child_is_NULL
 }
 
 /* Test removeNextLargerSuccessor (case 1)
- *                 parent                             parent
- *                  |                                   |
- *                  V                                   v
- *                 5(b)       successor 1(b)           8(b)
- *               /     \          ---->               /   \
- *           1(b)      8(b)                        5(b)    10(b)
- *          /    \    /    \                     /    \   /     \
- *        -       -  -      10(r)               -     -  -      -
+ *                 parent's left                      parent's left                     parent's left
+ *                  |                                   |                                     |
+ *                  V                                   v                                     v
+ *                 5(b)       successor 1(b)           5(b)         restructure               8(b)
+ *               /     \          ---->              //    \          ----->                /     \
+ *           1(b)      8(b)                         -       8(b)                          5(b)    10(b)
+ *          /    \    /    \                              /     \
+ *        -       -  -      10(r)                        -       10(r)
  */
 void test_removeNextLargerSuccessor_case1_with_root_5_and_right_child_8r_10b(void)  {
   setNode(&node1, NULL, NULL, 'b');
@@ -295,3 +296,43 @@ void test_removeNextLargerSuccessor_case2b_with_root_4r_one_black_sibling_two_bl
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node8);
 }
 
+/* Test removeNextLargerSuccessor (case 3)
+ *             parent->left                         parent->left
+ *                  |                                   |
+ *                  V                                   v
+ *                10(b)       successor 5(b)           10(b)
+ *              /      \          ---->              //     \         after removed 5(b) now
+ *          5(b)        15(r)                       -       15(r)     it's a DoubleBlack
+ *        /    \       /    \                               /    \
+ *       -     -  13(b)   20(b)                         13(b)   20(b)
+ *
+ *                    parent->left                              parent->left
+ *                        |                                         |
+ *    Case3               v               Case2                    v
+ *  leftRotation         15(b)           colour flip              15(b)
+ *   ----->            /     \            ------>                 /     \
+ *                  10(r)      20(b)                           10(b)     20(b)
+ *                //    \     /    \                          /   \      /    \
+ *               -    13(b)  -     -                        -    13(r)  -      -
+ */
+void test_removeNextLargerSuccessor_case3_with_root_10b_one_red_sibling_two_black_nephews(void)  {
+  setNode(&node13, NULL, NULL, 'b');
+  setNode(&node20, NULL, NULL, 'b');
+  setNode(&node5, NULL, NULL, 'b');
+  setNode(&node15, &node13, &node20, 'r');
+  setNode(&node10, &node5, &node15, 'b');
+  Node *parent = &node10;
+
+  printf("Start test_removeNextLargerSuccessor_case3_with_root_10b_one_red_sibling_two_black_nephews\n");
+  Node *removedNode = removeNextLargerSuccessor(&parent);
+  printf("-------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(removedNode);
+  TEST_ASSERT_EQUAL(5, removedNode->data);
+  TEST_ASSERT_NOT_NULL(parent);
+  TEST_ASSERT_EQUAL(15, parent->data);
+  TEST_ASSERT_EQUAL_NODE(&node10, &node20, 'b', parent);
+  TEST_ASSERT_EQUAL_NODE(NULL, &node13, 'b', &node10);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node13);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node20);
+}

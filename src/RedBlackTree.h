@@ -16,6 +16,8 @@ void colorFlipping(Node **rootPtr, Node *removedNode);
 //new implement
 Node *delRedBlackTree(Node **rootPtr, Node *removeNode);
 Node *_delRedBlackTree(Node **rootPtr, Node *removeNode);
+Node *integratedDelRedBlackTree(Node **rootPtr, Node *removeNode);
+Node *_integratedDelRedBlackTree(Node **rootPtr, Node *removeNode);
 int isDoubleBlack(Node *rootPtr, Node *removedNode);
 int caseSelect(Node *rootPtr);
 int checkGrandchild(Node *rootPtr);

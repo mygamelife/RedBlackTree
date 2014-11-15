@@ -231,9 +231,17 @@ Node *_delRedBlackTreex(Node **rootPtr, Node *removeNode) {
 
 int isDoubleBlack(Node *rootPtr, Node *removedNode) {
 
-  if((rootPtr == NULL ||  rootPtr->color == 'd')  &&  removedNode->color == 'b')  {
+  if(rootPtr == NULL  &&  removedNode->color == 'r')
+    return 0;
+
+  else if((rootPtr == NULL ||  rootPtr->color == 'd')  &&  (removedNode->color == 'b' ||  removedNode->color == 'r'))
     return 1;
-  }
+
+  // else if((rootPtr == NULL ||  rootPtr->color == 'd')  &&  removedNode->color == 'r')
+    // return 1;
+
+  // else if((rootPtr == NULL ||  rootPtr->color == 'd')  &&  removedNode->color == 'b')
+    // return 1;
 
   else  return 0;
 }
@@ -445,15 +453,17 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
 Node *removeNextLargerSuccessor(Node **parentPtr) {
   Node *parent = *parentPtr, *removedNode;
 
-  if(parent->left  == NULL)  {
-    removedNode = parent;
-    *parentPtr = NULL;
+  printf("Entered removeNextLargerSuccessor\n");
 
+   if(parent->left == NULL) {
+      printf("Removed successor is %d\n", parent->data);
+      removedNode = parent;
+      *parentPtr = NULL;
 
-    if(parent->right != NULL) {
+   if(parent->right != NULL) {
       (*parentPtr) = parent->right;
       (*parentPtr)->color = 'b';
-    }
+   }
     printf("RemovedNode is %d\n", removedNode->data);
     return removedNode;
   }
@@ -461,7 +471,7 @@ Node *removeNextLargerSuccessor(Node **parentPtr) {
   else  {
     removedNode = removeNextLargerSuccessor(&(*parentPtr)->left);
 
-    //left side have DoubleBlack
+    // left side have DoubleBlack
     if(isDoubleBlack((*parentPtr)->left, removedNode))  {
       printf("Pass %d into caseSelect\n", (*parentPtr)->right->data);
       int _case = caseSelect((*parentPtr)->right);
@@ -474,5 +484,91 @@ Node *removeNextLargerSuccessor(Node **parentPtr) {
   return removedNode;
 }
 
+/***************************************************************************************
+ *            integratedDelRedBlackTree                                                *
+ *  input :                                                                            *
+ *          parentPtr can be the root or sibling                                       *
+ *  output  :                                                                          *
+ *            can remove node at any position                                          *
+ ***************************************************************************************/
+Node *integratedDelRedBlackTree(Node **rootPtr, Node *removeNode)  {
+  Node *root, *node;
 
+  node = _integratedDelRedBlackTree(rootPtr, removeNode);
 
+  if(*rootPtr != NULL)
+    (*rootPtr)->color = 'b';
+
+  return node;
+}
+
+Node *_integratedDelRedBlackTree(Node **rootPtr, Node *removeNode) {
+  Node *root, *removedNode, *successor, *node = *rootPtr;
+  int _case;
+
+  if(node == NULL)
+    Throw(ERR_NODE_UNAVAILABLE);
+
+  //find removeNode
+  else if(node->data == removeNode->data)  {
+
+    if(node->left==NULL &&  node->left==NULL)
+      *rootPtr = NULL;
+
+    else  {
+      removedNode = node;
+      successor = removeNextLargerSuccessor(&(*rootPtr)->right);
+      successor->left = (*rootPtr)->left;
+      successor->right = (*rootPtr)->right;
+      successor->color = (*rootPtr)->color;
+      (*rootPtr) = successor;
+
+      if((*rootPtr)->right)
+        printf("right data %d, color %c\n", (*rootPtr)->right->data, (*rootPtr)->right->color);
+
+      printf("Removed data %d, color %c\n", removedNode->data, removedNode->color);
+      // Right side has DoubleBlack
+      if(isDoubleBlack((*rootPtr)->right, removedNode)) {
+        _case = caseSelect((*rootPtr)->left);
+        printf("_case %d\n", _case);
+        handleCaseViolation(&(*rootPtr), _case, removedNode);
+      }
+
+      // Left side has DoubleBlack
+      if(isDoubleBlack((*rootPtr)->left, removedNode))  {
+        _case = caseSelect((*rootPtr)->right);
+        printf("_case %d\n", _case);
+        handleCaseViolation(&(*rootPtr), _case, removedNode);
+      }
+    }
+
+    return removedNode;
+  }
+
+  //left side
+  else if(node->data > removeNode->data)  {
+    node = _integratedDelRedBlackTree(&node->left, removeNode);
+
+    if(isDoubleBlack((*rootPtr)->left, node)) {
+      _case = caseSelect((*rootPtr)->right);
+      printf("_case %d\n", _case);
+      handleCaseViolation(&(*rootPtr), _case, node);
+    }
+    return node;
+  }
+
+  //right side
+  else if(node->data < removeNode->data)  {
+    node = _integratedDelRedBlackTree(&node->right, removeNode);
+
+    printf("(*rootPtr) %d\n", (*rootPtr)->data);
+    printf("(*rootPtr)->right data %d, color %c\n", (*rootPtr)->right->data, (*rootPtr)->right->color);
+    printf("node data %d, color %c\n", node->data, node->color);
+    if(isDoubleBlack((*rootPtr)->right, node)) {
+      _case = caseSelect((*rootPtr)->left);
+      printf("_case %d\n", _case);
+      handleCaseViolation(&(*rootPtr), _case, node);
+    }
+    return node;
+  }
+}
