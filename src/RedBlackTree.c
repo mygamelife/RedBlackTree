@@ -6,6 +6,7 @@
 char parentColor; //store parent color
 void _addRedBlackTree(Node **rootPtr, Node *newNode);
 Node *_delRedBlackTreex(Node **rootPtr, Node *removeNode);
+Node *_removeNextLargerSuccessor(Node **parentPtr);
 
 void addRedBlackTree(Node **rootPtr, Node *newNode)	{
 	_addRedBlackTree(rootPtr, newNode);
@@ -230,11 +231,9 @@ Node *_delRedBlackTreex(Node **rootPtr, Node *removeNode) {
 
 int isDoubleBlack(Node *rootPtr, Node *removedNode) {
 
-  if(rootPtr != NULL)
-    printf("isDoubleBlack rootPtr %d\n", rootPtr->data);
-
-  if((rootPtr == NULL ||  rootPtr->color == 'd')  &&  removedNode->color == 'b')
+  if((rootPtr == NULL ||  rootPtr->color == 'd')  &&  removedNode->color == 'b')  {
     return 1;
+  }
 
   else  return 0;
 }
@@ -255,16 +254,13 @@ int caseSelect(Node *rootPtr) {
   if(rootPtr == NULL)
     return  0;
 
-  if(rootPtr != NULL)
-    printf("rootPtr %d\n", rootPtr->data);
-
   Node* rootLeftPtr = rootPtr->left;
   Node* rootRightPtr = rootPtr->right;
 
+  if(rootLeftPtr != NULL)
+    printf("rootLeftPtr %d\n", rootLeftPtr->data);
   if(rootRightPtr != NULL)
     printf("rootRightPtr %d\n", rootRightPtr->data);
-  else if(rootLeftPtr != NULL)
-    printf("rootLeftPtr %d\n", rootLeftPtr->data);
   // case1 sibling is black and has a red nephew
   if(rootPtr->color == 'b') {
     if((rootRightPtr != NULL && rootRightPtr->color == 'r') ||  (rootLeftPtr != NULL && rootLeftPtr->color == 'r'))
@@ -328,21 +324,22 @@ void handleCaseOne(Node **rootPtr) {
 //handle Case2
 void handleCaseTwo(Node **rootPtr)  {
   Node *root = *rootPtr;
-  printf("rootPtr data %d\n", root->data);
+  printf("Case 2 rootPtr data %d\n", root->data);
   //flip root color
   if(root->color == 'b')
     root->color = 'd';
-  else if(root->color == 'r')
+  if(root->color == 'r')
     root->color = 'b';
 
-  if(root->left != NULL)
-    root->left->color = 'r';
-  if(root->right != NULL)
-    root->right->color = 'r';
-  if(root->left != NULL && root->right != NULL)  {
+  if(root->left && root->left->color == 'd')
     root->left->color = 'b';
+  else if(root->left && root->left->color == 'b')
+    root->left->color = 'r';
+  if(root->right  &&  root->right->color == 'b')
+    root->right->color = 'r';
+  else if(root->right  &&  root->right->color == 'd')
     root->right->color = 'b';
-  }
+
 }
 
 //handle Case3
@@ -447,13 +444,33 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
 Node *removeNextLargerSuccessor(Node **parentPtr) {
   Node *parent = *parentPtr, *removedNode;
 
-  if(parent->left)
-    removedNode = removeNextLargerSuccessor(&(*parentPtr)->left);
+  if(parent->left  == NULL)  {
+    removedNode = parent;
+    *parentPtr = NULL;
+
+
+    if(parent->right != NULL) {
+      (*parentPtr) = parent->right;
+      (*parentPtr)->color = 'b';
+    }
+    printf("RemovedNode is %d\n", removedNode->data);
+    return removedNode;
+  }
 
   else  {
-    *parentPtr = NULL;
-    return parent;
+    removedNode = removeNextLargerSuccessor(&(*parentPtr)->left);
+
+    //left side have DoubleBlack
+    if(isDoubleBlack((*parentPtr)->left, removedNode))  {
+      printf("Pass %d into caseSelect\n", (*parentPtr)->right->data);
+      int _case = caseSelect((*parentPtr)->right);
+      handleCaseViolation(&(*parentPtr), _case, removedNode);
+    }
+    printf("After restructure\n");
+    printf("%d going to return and has color %d\n", (*parentPtr)->data, (*parentPtr)->color);
+    printf("-----------------------------\n");
   }
+  return removedNode;
 }
 
 
