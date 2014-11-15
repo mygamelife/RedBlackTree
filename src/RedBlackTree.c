@@ -325,21 +325,18 @@ void handleCaseOne(Node **rootPtr) {
 void handleCaseTwo(Node **rootPtr)  {
   Node *root = *rootPtr;
   printf("Case 2 rootPtr data %d\n", root->data);
-  //flip root color
+
+  //  flip root/parent color
   if(root->color == 'b')
     root->color = 'd';
-  if(root->color == 'r')
-    root->color = 'b';
+  else  root->color = 'b';
 
-  if(root->left && root->left->color == 'd')
-    root->left->color = 'b';
-  else if(root->left && root->left->color == 'b')
-    root->left->color = 'r';
-  if(root->right  &&  root->right->color == 'b')
-    root->right->color = 'r';
-  else if(root->right  &&  root->right->color == 'd')
-    root->right->color = 'b';
+  //  flip left/right child color
+  if(root->left)
+    root->left->color = (root->left->color == 'd')? 'b':'r';
 
+  if(root->right)
+    root->right->color = (root->right->color == 'd')? 'b':'r';
 }
 
 //handle Case3
@@ -438,9 +435,13 @@ Node *_delRedBlackTree(Node **rootPtr, Node *removeNode) {
   }
 }
 
-/*********************************************
- **       removeNextLargerSuccessor         **
- *********************************************/
+/***************************************************************************************
+ *            removeNextLargerSuccessor                                                *
+ *  input :                                                                            *
+ *          parentPtr can be the root or sibling                                       *
+ *  output  :                                                                          *
+ *            search the next larger successor from the deep left of the right child   *
+ ***************************************************************************************/
 Node *removeNextLargerSuccessor(Node **parentPtr) {
   Node *parent = *parentPtr, *removedNode;
 

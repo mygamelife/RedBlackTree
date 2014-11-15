@@ -217,14 +217,14 @@ void test_removeNextLargerSuccessor_case1_with_root_4_one_black_sibling_two_red_
  *
  *          parent->left                            parent->left
  *              |                                       |
- *              v                                       v
+ *              v                                       v//
  *             4(b)           colour flip              4(b)
  *          //     \          ------>                 /     \
  *      2(d)        7(b)                           2(b)     7(r)
  *    /     \      /    \                         /   \    /    \
  *   -      3(r)  6(b)   8(b)                    -   3(r) 6(b)  8(b)
  */
-void test_removeNextLargerSuccessor_case2_with_root_4_one_black_sibling_one_black_nephews(void)  {
+void test_removeNextLargerSuccessor_case2_with_root_4b_one_black_sibling_two_black_nephews(void)  {
   setNode(&node1, NULL, NULL, 'b');
   setNode(&node3, NULL, NULL, 'b');
   setNode(&node6, NULL, NULL, 'b');
@@ -234,7 +234,7 @@ void test_removeNextLargerSuccessor_case2_with_root_4_one_black_sibling_one_blac
   setNode(&node4, &node2, &node7, 'b');
   Node *parent = &node4;
 
-  printf("Start test_removeNextLargerSuccessor_case2_with_root_2_one_black_sibling_one_black_nephews\n");
+  printf("Start test_removeNextLargerSuccessor_case2_with_root_4b_one_black_sibling_two_black_nephews\n");
   Node *removedNode = removeNextLargerSuccessor(&parent);
   printf("-------------------------------------------------------------\n");
 
@@ -250,35 +250,48 @@ void test_removeNextLargerSuccessor_case2_with_root_4_one_black_sibling_one_blac
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node8);
 }
 
-
-/* Test removeNextLargerSuccessor
- *                 parent                             parent
+/* Test removeNextLargerSuccessor (case 2b)
+ *             parent->left                         parent->left
  *                  |                                   |
- *                  V                                   v
- *                 5(b)       successor 6(r)           5(b)
- *               /     \          ---->               /   \
- *           1(b)      8(r)                        1(b)    8(r)
- *                    /                                   /
- *                7(b)                                7(b)
- *               /
- *           6(r)
+ *                  V                                   v             promote double black
+ *                 4(r)       successor 1(b)           4(r)           to 2(b) (case 2)
+ *              /      \          ---->             /       \            ----->
+ *          2(b)        7(b)                     2(b)       7(b)
+ *        /    \       /    \                  //   \      /    \
+ *    1(b)     3(b)  6(b)   8(b)              -     3(b) 6(b)   8(b)
+ *
+ *          parent->left                            parent->left
+ *              |                                       |
+ *              v                                       v
+ *             4(r)           colour flip              4(b)
+ *          //     \          ------>                 /     \
+ *      2(d)        7(b)                           2(b)     7(r)
+ *    /     \      /    \                         /   \    /    \
+ *   -      3(r)  6(b)   8(b)                    -   3(r) 6(b)  8(b)
  */
-void Xtest_removeSuccessor_remove_successor_with_parent_5__one_left_child_and_multiple_right_Leftchild(void)  {
+void test_removeNextLargerSuccessor_case2b_with_root_4r_one_black_sibling_two_black_nephews(void)  {
   setNode(&node1, NULL, NULL, 'b');
-  setNode(&node6, NULL, NULL, 'r');
-  setNode(&node7, &node6, NULL, 'b');
-  setNode(&node8, &node7, NULL, 'r');
-  setNode(&node5, &node1, &node8, 'b');
-  Node *parent = &node5;
+  setNode(&node3, NULL, NULL, 'b');
+  setNode(&node6, NULL, NULL, 'b');
+  setNode(&node8, NULL, NULL, 'b');
+  setNode(&node2, &node1, &node3, 'b');
+  setNode(&node7, &node6, &node8, 'b');
+  setNode(&node4, &node2, &node7, 'r');
+  Node *parent = &node4;
 
-  Node *succesor = removeNextLargerSuccessor(&parent->right);
+  printf("Start test_removeNextLargerSuccessor_case2b_with_root_4r_one_black_sibling_two_black_nephews\n");
+  Node *removedNode = removeNextLargerSuccessor(&parent);
+  printf("-------------------------------------------------------------\n");
 
-  TEST_ASSERT_NOT_NULL(succesor);
-  TEST_ASSERT_EQUAL(6, succesor->data);
+  TEST_ASSERT_NOT_NULL(removedNode);
+  TEST_ASSERT_EQUAL(1, removedNode->data);
   TEST_ASSERT_NOT_NULL(parent);
-  TEST_ASSERT_EQUAL_NODE(&node1, &node8, 'b', parent);
-  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node1);
-  TEST_ASSERT_EQUAL_NODE(&node7, NULL, 'r', &node8);
-  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node7);
+  TEST_ASSERT_EQUAL(4, parent->data);
+  TEST_ASSERT_EQUAL_NODE(&node2, &node7, 'b', parent);
+  TEST_ASSERT_EQUAL_NODE(NULL, &node3, 'b', &node2);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node3);
+  TEST_ASSERT_EQUAL_NODE(&node6, &node8, 'r', &node7);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node6);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node8);
 }
 
