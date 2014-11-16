@@ -482,7 +482,7 @@ Node *removeNextLargerSuccessor(Node **parentPtr) {
 
    if(parent->right != NULL) {
       (*parentPtr) = parent->right;
-      (*parentPtr)->color = 'b';
+      (*parentPtr)->color = parent->color;
    }
     printf("RemovedNode is %d\n", removedNode->data);
     return removedNode;

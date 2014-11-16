@@ -8,7 +8,7 @@
 #include "ErrorCode.h"
 
 Node node1, node2, node3, node4, node5, node6, node7, node8, node10, node13, node15,
-     node18, node20, node22, node30, node40, node60; //Share to all test
+     node18, node20, node22, node25, node30, node40, node60; //Share to all test
 
 /* Run reset before test*/
 void setUp(void)	{
@@ -26,6 +26,7 @@ void setUp(void)	{
 	resetNode(&node18, 18);
 	resetNode(&node20, 20);
 	resetNode(&node22, 22);
+	resetNode(&node25, 25);
 	resetNode(&node30, 30);
 	resetNode(&node40, 40);
 	resetNode(&node60, 60);
@@ -33,7 +34,7 @@ void setUp(void)	{
 
 void tearDown(void) {}
 
-/** Test remove 7(b)
+/** Test remove right side parent 7(b) with black color root
  *                parent                              parent
  *                  |                                   |
  *                  V           remove                  v             the successor 8(b) is removed and replace with
@@ -52,7 +53,7 @@ void tearDown(void) {}
  *      /    \     /    \\                       /   \     /    \                             /   \     /    \
  *   1(b)   3(b)  6(b)   -                   1(b)   3(b)  6(r)   -                          1(b)  3(b) 6(r)   -
  */
-void test_integratedDelRedBlackTree_case2_with_parent_4b_both_sibling_nephews_are_black(void)  {
+void test_integratedDelRedBlackTree_remove_right_side_parent_7b_and_root_is_black(void)  {
   setNode(&node1, NULL, NULL, 'b');
   setNode(&node3, NULL, NULL, 'b');
   setNode(&node6, NULL, NULL, 'b');
@@ -62,14 +63,14 @@ void test_integratedDelRedBlackTree_case2_with_parent_4b_both_sibling_nephews_ar
   setNode(&node4, &node2, &node7, 'b');
   Node *parent = &node4;
 
-  printf("Start test_integratedDelRedBlackTree_case2_with_parent_4b_both_sibling_nephews_are_black\n");
+  printf("Start test_integratedDelRedBlackTree_remove_right_side_parent_7b_and_root_is_black\n");
   Node *removedNode = integratedDelRedBlackTree(&parent, &node7);
   printf("-------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(removedNode);
-  TEST_ASSERT_EQUAL(7, removedNode->data);
+  TEST_ASSERT_EQUAL_PTR(&node7, removedNode);
   TEST_ASSERT_NOT_NULL(parent);
-  TEST_ASSERT_EQUAL(4, parent->data);
+  TEST_ASSERT_EQUAL_PTR(&node4, parent);
   TEST_ASSERT_EQUAL_NODE(&node2, &node8, 'b', parent);
   TEST_ASSERT_EQUAL_NODE(&node1, &node3, 'r', &node2);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node1);
@@ -78,7 +79,7 @@ void test_integratedDelRedBlackTree_case2_with_parent_4b_both_sibling_nephews_ar
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node6);
 }
 
-/** Test remove 22(b)
+/** Test remove right side parent 22(b) with red color root
  *                parent                              parent
  *                  |                                   |
  *                  V           remove                  v             the successor 30(b) is removed and replace with
@@ -97,7 +98,7 @@ void test_integratedDelRedBlackTree_case2_with_parent_4b_both_sibling_nephews_ar
  *      /    \      /    \\                       /   \     /    \                             /   \     /    \
  *   5(b)   10(b) 20(b)   -                   5(b)   10(b) 20(r)  -                        5(b)  10(b) 20(r)   -
  */
-void test_integratedDelRedBlackTree_case2_with_root_18r_both_sibling_and_newphews_are_black(void)  {
+void test_integratedDelRedBlackTree_remove_right_side_parent_22b_and_root_is_red(void)  {
   setNode(&node5, NULL, NULL, 'b');
   setNode(&node10, NULL, NULL, 'b');
   setNode(&node20, NULL, NULL, 'b');
@@ -107,14 +108,14 @@ void test_integratedDelRedBlackTree_case2_with_root_18r_both_sibling_and_newphew
   setNode(&node18, &node8, &node22, 'r');
   Node *parent = &node18;
 
-  printf("Start test_integratedDelRedBlackTree_case2_with_root_18r_both_sibling_and_newphews_are_black\n");
+  printf("Start test_integratedDelRedBlackTree_remove_right_side_parent_22b_and_root_is_red\n");
   Node *removedNode = integratedDelRedBlackTree(&parent, &node22);
   printf("-------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(removedNode);
-  TEST_ASSERT_EQUAL(22, removedNode->data);
+  TEST_ASSERT_EQUAL_PTR(&node22, removedNode);
   TEST_ASSERT_NOT_NULL(parent);
-  TEST_ASSERT_EQUAL(18, parent->data);
+  TEST_ASSERT_EQUAL_PTR(&node18, parent);
   TEST_ASSERT_EQUAL_NODE(&node8, &node30, 'b', parent);
   TEST_ASSERT_EQUAL_NODE(&node5, &node10, 'r', &node8);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node5);
@@ -123,8 +124,102 @@ void test_integratedDelRedBlackTree_case2_with_root_18r_both_sibling_and_newphew
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node20);
 }
 
-/** Test remove parent 18(r)
+/** Test remove right side parent 25(r) with red color
  *                parent                              parent
+ *                  |                                   |
+ *                  V           remove                  v             the successor 30(b) is removed and replace with
+ *                18(b)       successor 30(b)          18(b)           40(r) and doubleBlack is occurred
+ *              /      \          ---->             /       \
+ *          8(r)        25(r)                     8(r)       25(r)
+ *        /    \       /    \                  /     \      /    \\
+ *    5(b)     10(b) 20(b)  30(b)            5(b)  10(b) 20(b)    -
+ *                              \                                   \
+ *                             40(r)                                 40(r)
+ *
+ *               parent                                 parent
+ *                |                                       |
+ *                v          replace 25(r) with           v
+ *              18(b)        30(b) successor            18(b)
+ *            /      \           ------>               /     \
+ *        8(r)       25(r)                         8(r)      30(r)
+ *      /    \      /    \                        /   \     /    \
+ *   5(b)   10(b) 20(b)   40(b)               5(b)  10(b) 20(b)   40(b)
+ */
+void test_integratedDelRedBlackTree_remove_right_side_parent_25r_with_root_is_black(void)  {
+  setNode(&node40, NULL, NULL, 'r');
+  setNode(&node5, NULL, NULL, 'b');
+  setNode(&node10, NULL, NULL, 'b');
+  setNode(&node20, NULL, NULL, 'b');
+  setNode(&node30, NULL, &node40, 'b');
+  setNode(&node8, &node5, &node10, 'r');
+  setNode(&node25, &node20, &node30, 'r');
+  setNode(&node18, &node8, &node25, 'r');
+  Node *parent = &node18;
+
+  printf("Start test_integratedDelRedBlackTree_remove_right_side_parent_25r_red\n");
+  Node *removedNode = integratedDelRedBlackTree(&parent, &node25);
+  printf("-------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(removedNode);
+  TEST_ASSERT_EQUAL_PTR(&node25, removedNode);
+  TEST_ASSERT_NOT_NULL(parent);
+  TEST_ASSERT_EQUAL_PTR(&node18, parent);
+  TEST_ASSERT_EQUAL_NODE(&node8, &node30, 'b', parent);
+  TEST_ASSERT_EQUAL_NODE(&node5, &node10, 'r', &node8);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node5);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node10);
+  TEST_ASSERT_EQUAL_NODE(&node20, &node40, 'r', &node30);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node20);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node40);
+}
+
+/** Test remove left side parent 8(b) with red color root
+ *                root                                root
+ *                  |                                   |
+ *        parent    V           remove                  v
+ *          |      18(r)       successor 10(b)          18(r)
+ *          V    /      \          ---->             /       \
+ *          8(b)        22(b)                     8(b)       22(b)
+ *        /    \       /    \                  /    \\     /     \
+ *    5(b)     10(b) 20(b)  30(b)            5(b)    -  20(b)    30(b)
+ *
+ *  Call case2                    root                                   root                                    root
+ *  promote doubleBlack            |         replace the deleteNode       |                                       |
+ *  and color flip                 v         with successor               v           call Case2 again            v
+ *    ------>                   18(r)            ----->                 18(r)             ----->                18(b)
+ *                           //      \                               //      \                                /     \
+ *                        8(d)       22(b)                         10(d)     22(b)                       10(b)      22(r)
+ *                      /    \      /    \                       /   \     /    \                       /    \     /     \
+ *                    5(r)   -  20(b)    30(b)                5(r)   -  20(b)   30(b)                5(r)     - 20(b)  30(b)
+ */
+void test_integratedDelRedBlackTree_remove_left_side_parent_8b_and_root_is_red(void)  {
+  setNode(&node5, NULL, NULL, 'b');
+  setNode(&node10, NULL, NULL, 'b');
+  setNode(&node20, NULL, NULL, 'b');
+  setNode(&node30, NULL, NULL, 'b');
+  setNode(&node8, &node5, &node10, 'b');
+  setNode(&node22, &node20, &node30, 'b');
+  setNode(&node18, &node8, &node22, 'r');
+  Node *parent = &node18;
+
+  printf("Start test_integratedDelRedBlackTree_remove_left_side_parent_8b_and_root_is_red\n");
+  Node *removedNode = integratedDelRedBlackTree(&parent, &node8);
+  printf("-------------------------------------------------------------\n");
+
+  TEST_ASSERT_NOT_NULL(removedNode);
+  TEST_ASSERT_EQUAL_PTR(&node8, removedNode);
+  TEST_ASSERT_NOT_NULL(parent);
+  TEST_ASSERT_EQUAL_PTR(&node18, parent);
+  TEST_ASSERT_EQUAL_NODE(&node10, &node22, 'b', parent);
+  TEST_ASSERT_EQUAL_NODE(&node5, NULL, 'b', &node10);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'r', &node5);
+  TEST_ASSERT_EQUAL_NODE(&node20, &node30, 'r', &node22);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node20);
+  TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node30);
+}
+
+/** Test remove the root 18(r)
+ *                 root                               root
  *                  |                                   |
  *                  V           remove                  v             the successor 20(b) is removed and replace with
  *                18(r)       successor 20(b)          18(r)          18(r) and doubleBlack occurred
@@ -157,9 +252,9 @@ void test_integratedDelRedBlackTree_remove_parent_node(void)  {
   printf("-------------------------------------------------------------\n");
 
   TEST_ASSERT_NOT_NULL(removedNode);
-  TEST_ASSERT_EQUAL(18, removedNode->data);
+  TEST_ASSERT_EQUAL_PTR(&node18, removedNode);
   TEST_ASSERT_NOT_NULL(parent);
-  TEST_ASSERT_EQUAL(20, parent->data);
+  TEST_ASSERT_EQUAL_PTR(&node20, parent);
   TEST_ASSERT_EQUAL_NODE(&node8, &node22, 'b', parent);
   TEST_ASSERT_EQUAL_NODE(&node5, &node10, 'r', &node8);
   TEST_ASSERT_EQUAL_NODE(NULL, NULL, 'b', &node5);
